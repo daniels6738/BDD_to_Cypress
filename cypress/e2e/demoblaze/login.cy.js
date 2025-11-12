@@ -4,9 +4,34 @@ describe('Login Functionality', function () {
         // Visit the homepage before each test
         cy.visit('https://demoblaze.com/')
     });
+    it('should succesfully login with valid credentials', () => {
+        // Press login button
+        cy.get('#login2').click();
+        // Wait for modal form to appear
+        cy.wait(3000);
+
+        // Enter credentials
+        cy.get('#loginusername').type('demoblaze');
+        cy.get('#loginpassword').type('demoblaze');
+
+        // Submit form
+        cy.get('#logInModal button.btn-primary').click();
+
+
+        // Check that the logout button is visible to ensure user is logged in
+        cy.get('#logout2', { timeout: 6000 }).should('be.visible');
+
+        // Check that login button is no longer there
+        cy.get('#login2').should('not.be.visible');
+
+    });
+
     it('should display a login failure message', () => {
         // Press login button
         cy.get('#login2').click();
+
+        // Wait for modal form to appear
+        cy.wait(3000);
 
         // Enter wrong credentials
         cy.get('#loginusername').type('bdd-auto-cypress');
@@ -24,7 +49,4 @@ describe('Login Functionality', function () {
         cy.get('#logout2').should('not.be.visible');
 
     });
-
-
-
 });
