@@ -7,6 +7,7 @@ describe('Login Functionality', function () {
     it('should succesfully login with valid credentials', () => {
         // Press login button
         cy.get('#login2').click();
+
         // Wait for modal form to appear
         cy.wait(3000);
 
@@ -16,7 +17,6 @@ describe('Login Functionality', function () {
 
         // Submit form
         cy.get('#logInModal button.btn-primary').click();
-
 
         // Check that the logout button is visible to ensure user is logged in
         cy.get('#logout2', { timeout: 6000 }).should('be.visible');
