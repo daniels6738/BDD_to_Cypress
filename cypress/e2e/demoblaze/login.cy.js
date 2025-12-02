@@ -4,7 +4,7 @@ describe('Login Functionality', function () {
         // Visit the homepage before each test
         cy.visit('https://demoblaze.com/')
     });
-    it('should succesfully login with valid credentials', () => {
+    it('Successful login with valid credentials', () => {
         // Press login button
         cy.get('#login2').click();
 
@@ -26,7 +26,7 @@ describe('Login Functionality', function () {
 
     });
 
-    it('should display a login failure message', () => {
+    it('Unsuccessful login with invalid credentials', () => {
         // Press login button
         cy.get('#login2').click();
 

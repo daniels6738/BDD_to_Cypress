@@ -3,12 +3,10 @@ describe('Checkout Process', () => {
     beforeEach(() => {
         // Log in before each test
         cy.visit('https://www.saucedemo.com/v1/');
-        cy.get('#user-name').type('standard_user');
-        cy.get('#password').type('secret_sauce');
-        cy.get('#login-button').click();
+        cy.login();
     });
 
-    it('should add a product and complete the purchase flow', () => {
+    it('Complete a purchase successfully', () => {
         // Add a product to the cart
         cy.get('.btn_inventory').first().click();
         cy.get('.shopping_cart_link').click();

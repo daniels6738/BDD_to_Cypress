@@ -3,12 +3,10 @@ describe('Product Sorting', () => {
     beforeEach(() => {
         // Log in before each test
         cy.visit('https://www.saucedemo.com/v1/');
-        cy.get('#user-name').type('standard_user');
-        cy.get('#password').type('secret_sauce');
-        cy.get('#login-button').click();
+        cy.login();
     });
 
-    it('should sort products by name from Z to A', () => {
+    it('Sort products by name from Z to A', () => {
         // Verify the sort container exists
         cy.get('.product_sort_container').should('exist');
         

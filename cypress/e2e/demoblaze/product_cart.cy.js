@@ -5,7 +5,7 @@ describe('Product Cart', () => {
     cy.visit('https://www.demoblaze.com/');
   });
 
-  it('should add a product to the cart', () => {
+  it('Add a specific product to the cart', () => {
     // Select the product, then add it to the cart
     cy.get("a").contains("Samsung galaxy s6").click();
     cy.get("a").contains("Add to cart").click();

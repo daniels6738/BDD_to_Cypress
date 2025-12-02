@@ -1,6 +1,6 @@
 import './commands';
 
-describe('Cart Management', () => {
+describe('Shopping Cart Management', () => {
 
     beforeEach(() => {
         // Log in before each test
@@ -8,7 +8,7 @@ describe('Cart Management', () => {
         cy.login();
     });
 
-    it('should add a product to the cart', () => {
+    it('Add a product to the shopping cart', () => {
         // Add the first product to the cart
         cy.get('.btn_inventory').first().click();
 
@@ -21,7 +21,7 @@ describe('Cart Management', () => {
         cy.get('.inventory_item_name').should('exist');
     });
 
-    it('should remove a product from the cart', () => {
+    it('Remove a product from the shopping cart', () => {
         
         // Add the first product to the cart
         cy.get('.btn_inventory').first().click();

@@ -7,7 +7,7 @@ describe('Login Functionality', () => {
         cy.visit('https://www.saucedemo.com');
     });
 
-    it('should successfully log in with valid credentials', () => {
+    it('Successful login with valid credentials', () => {
         // Type correct username and password
         cy.login();
 
@@ -16,7 +16,7 @@ describe('Login Functionality', () => {
         cy.url().should('include', '/inventory.html');
     });
 
-    it('should display an error message with invalid credentials', () => {
+    it('Unsuccessful login with invalid credentials', () => {
         // Type incorrect username and correct password
         cy.login('wrong_user', 'secret_sauce');
 
@@ -25,7 +25,7 @@ describe('Login Functionality', () => {
             .and('contain.text', 'Username and password do not match any user in this service');
     });
 
-    it('should successfully log out', () => {
+    it('Successfully log out from the application', () => {
         // Log in before running the test
         cy.login();
 

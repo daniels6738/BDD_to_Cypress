@@ -3,12 +3,10 @@ describe('Product Details Page', () => {
     beforeEach(() => {
         // Log in before each test
         cy.visit('https://www.saucedemo.com/v1/');
-        cy.get('#user-name').type('standard_user');
-        cy.get('#password').type('secret_sauce');
-        cy.get('#login-button').click();
+        cy.login();
     });
 
-    it('should view product details and return to the inventory page', () => {
+    it("View a product's details and return to the inventory page", () => {
         // Click on the first product's title
         cy.get('.inventory_item_name').first().click();
         
