@@ -1,4 +1,4 @@
-describe('TodoMVC - Routing and Filtering', function () {
+describe('Todo List Filtering', function () {
   beforeEach(function () {
     cy.visit('http://localhost:8888/');
 
@@ -18,7 +18,7 @@ describe('TodoMVC - Routing and Filtering', function () {
     });
   });
 
-  it('should allow me to display active items', function () {
+  it('Filter the list to show only active items', function () {
     // Setup: Mark the second item as complete
     cy.get('.todo-list li')
       .eq(1)

@@ -1,4 +1,4 @@
-describe('TodoMVC - Editing', function () {
+describe('Todo Item Editing', function () {
   beforeEach(function () {
     cy.visit('http://localhost:8888/');
 
@@ -18,7 +18,7 @@ describe('TodoMVC - Editing', function () {
     });
   });
 
-  it('should allow me to edit an item', function () {
+  it('Edit an existing todo item', function () {
     // Action: Double-click the second item and edit it
     cy.get('.todo-list li')
       .eq(1) // eq(1) targets the second item

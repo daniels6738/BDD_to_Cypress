@@ -1,4 +1,4 @@
-describe('TodoMVC - New Todo', function () {
+describe('Todo List Management', function () {
   const TODO_ITEM_ONE = 'buy some cheese';
 
   beforeEach(function () {
@@ -11,7 +11,7 @@ describe('TodoMVC - New Todo', function () {
     });
   });
 
-  it('should allow me to add a todo item', function () {
+  it('Add a new todo item', function () {
     // Action: Create the todo
     cy.get('.new-todo').type(`${TODO_ITEM_ONE}{enter}`);
 

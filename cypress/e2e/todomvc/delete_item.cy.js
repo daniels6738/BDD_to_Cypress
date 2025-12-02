@@ -1,4 +1,4 @@
-describe('TodoMVC - Deleting', function () {
+describe('Todo Item Deletion', function () {
   beforeEach(function () {
     cy.visit('http://localhost:8888/');
 
@@ -18,7 +18,7 @@ describe('TodoMVC - Deleting', function () {
     });
   });
 
-  it('should remove the item if an empty text string was entered during edit', function () {
+  it('Delete an item by editing it to be empty', function () {
     // Action: Edit the second item and clear its text
     cy.get('.todo-list li')
       .eq(1)

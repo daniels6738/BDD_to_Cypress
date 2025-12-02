@@ -1,4 +1,4 @@
-describe('TodoMVC - Item Completion', function () {
+describe('Todo Item Completion', function () {
   const TODO_ITEM_ONE = 'buy some cheese';
   const TODO_ITEM_TWO = 'feed the cat';
 
@@ -12,7 +12,7 @@ describe('TodoMVC - Item Completion', function () {
     });
   });
 
-  it('should allow me to mark an item as complete', function () {
+  it('Mark an item as complete', function () {
     // Setup: Create two todos by inlining the createTodo command
     cy.get('.new-todo').type(`${TODO_ITEM_ONE}{enter}`);
     cy.get('.new-todo').type(`${TODO_ITEM_TWO}{enter}`);

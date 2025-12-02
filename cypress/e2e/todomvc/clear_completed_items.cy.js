@@ -1,4 +1,4 @@
-describe('TodoMVC - Clear Completed', function () {
+describe('Clearing Completed Todos', function () {
   beforeEach(function () {
     cy.visit('http://localhost:8888/');
 
@@ -18,7 +18,7 @@ describe('TodoMVC - Clear Completed', function () {
     });
   });
 
-  it('should remove completed items when clicked', function () {
+  it('Clear all completed items from the list', function () {
     // Setup: Mark the second item as complete
     cy.get('.todo-list li')
       .eq(1)
