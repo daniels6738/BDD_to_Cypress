@@ -6,7 +6,7 @@ Feature: User Authentication and Onboarding
 
   @auth @security
   Scenario: Redirecting unauthenticated users
-    When an unauthenticated user visits a protected route like "/personal"
+    When an unauthenticated user visits a protected page like the profile page
     Then they should be redirected to the sign-in page
 
   @auth @login

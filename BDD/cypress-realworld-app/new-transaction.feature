@@ -58,7 +58,7 @@ Feature: New Transaction Functionality
     And the Contact navigates to the Personal Transactions tab
     And the Contact clicks on the transaction item with description "Fancy Hotel"
     And the Contact accepts the request
-    Then the request should be updated successfully (status code 204)
+    Then the request should be updated successfully
     When the Sender logs in
     Then the Sender's account balance should be updated, reflecting the request payment deposit
 

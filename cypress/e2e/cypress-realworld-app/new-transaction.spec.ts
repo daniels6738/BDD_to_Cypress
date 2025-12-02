@@ -8,7 +8,7 @@ type NewTransactionTestCtx = {
   contact?: User;
 };
 
-describe("New Transaction", function () {
+describe("New Transaction Functionality", function () {
   const ctx: NewTransactionTestCtx = {};
 
   beforeEach(function () {
