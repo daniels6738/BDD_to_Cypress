@@ -1,46 +1,45 @@
 Feature: Bank Accounts Management
 
   Background:
-    Given the application state is seeded
-    And the User is logged in
+    # Ubiquitous/Integrous: Uses "I" (Actor Consistency) and avoids "seeded" jargon
+    Given I am a logged-in user
 
   @bank-accounts @creation
-  Scenario: Creating a new bank account successfully
-    Given the User navigates to the Bank Accounts page
-    And the User clicks the "New" button to create an account
-    Then the user should be redirected to the New Bank Account page
-    When the User fills out the form with valid details:
-      | Field          | Value         |
-      | Bank Name      | The Best Bank |
-      | Routing Number | 987654321     |
-      | Account Number | 123456789     |
-    And the User submits the form
-    Then User should be redirected to the Bank Accounts page
-    And the Bank Account list should contain "The Best Bank"
+  Scenario: Adding a new bank account
+    # Essential/Focused: Replaces imperative clicking/filling with declarative action
+    Given I am on the Bank Accounts page
+    When I add a new bank account with valid details
+    # Singular: Verifies the business outcome, not the specific redirection URL
+    Then the account "The Best Bank" should be listed in my accounts
 
-  @bank-accounts @validation @error-handling
-  Scenario: Displaying bank account form validation errors
-    Given the User is on the New Bank Account form
-    When the User enters an invalid "Bank Name" (empty or less than 5 characters)
-    Then the helper text "Enter a bank name" or "Must contain at least 5 characters" should appear
-    When the User enters an invalid "Routing Number" (empty or less than 9 digits)
-    Then the helper text "Enter a valid bank routing number" or "Must contain a valid routing number" should appear
-    When the User enters a valid "Routing Number" of 9 digits
-    Then the routing number error should disappear
-    When the User enters an invalid "Account Number" (empty, less than 9, or more than 12 digits)
-    Then the helper text should indicate the length requirements (9-12 digits)
-    And the Submit button should be disabled throughout the validation errors
+  @bank-accounts @validation
+  Scenario Outline: Preventing invalid account details
+    # Essential/Singular: Uses Outline to test permutations without repetition or "monster" scenarios
+    Given I am adding a new bank account
+    When I attempt to save with <condition>
+    Then I should see the error "<error_message>"
+    # Focused: Focuses on the business rule (prevention), not the UI state (disabled button)
+    And the account should not be created
+
+    Examples:
+      | condition                         | error_message                       |
+      | a missing bank name               | Enter a bank name                   |
+      | a short bank name                 | Must contain at least 5 characters  |
+      | a short routing number            | Must contain a valid routing number |
+      | an account number with 8 digits   | Account number must be 9-12 digits  |
+      | an account number with 13 digits  | Account number must be 9-12 digits  |
 
   @bank-accounts @delete
-  Scenario: Soft deleting a bank account
-    Given the User is on the Bank Accounts list page
-    When the User clicks the delete button for the first bank account
-    Then the Bank Account should have "Deleted" in its name
+  Scenario: Deleting an existing bank account
+    # Ubiquitous: Replaces "Soft deleting" (technical) with "delete" (business)
+    Given I have a bank account named "Old Bank"
+    When I delete the account "Old Bank"
+    # Singular/Clear: Checks the clear business outcome
+    Then "Old Bank" should no longer appear in my active account list
 
-  @bank-accounts @empty-state @onboarding
-  Scenario: Rendering empty state with onboarding modal
-    Given the User has no bank accounts
-    When the User navigates to the Bank Accounts page
-    Then the Bank Account list should not exist
-    And the empty state header "No Bank Accounts" should be displayed
-    And the User Onboarding Dialog should be visible
+  @bank-accounts @onboarding
+  Scenario: New user onboarding prompt
+    # Focused: Removed "Modal/Dialog" (UI implementation detail)
+    Given I have no bank accounts
+    When I visit the Bank Accounts page
+    Then I should be prompted to create my first account

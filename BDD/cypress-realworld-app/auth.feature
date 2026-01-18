@@ -1,79 +1,75 @@
 Feature: User Authentication and Onboarding
 
   Background:
-    Given the application state is seeded
-    And API requests for signup and bank account creation are intercepted
+    # Removed technical jargon about API interception and seeding 
+    Given "Bob" is a registered user
 
   @auth @security
-  Scenario: Redirecting unauthenticated users
-    When an unauthenticated user visits a protected page like the profile page
-    Then they should be redirected to the sign-in page
+  Scenario: Restricting access to protected areas
+    # Ubiquitous language: "Visitor" instead of generic "user" [cite: 389]
+    Given I am a visitor
+    When I attempt to access the "Profile" page
+    # Focused: Declarative outcome rather than specific page redirect [cite: 138, 309]
+    Then I should be required to log in
 
   @auth @login
-  Scenario: Successful login redirection
-    Given an existing user
-    When the user navigates to the login page
-    And submits the form with valid credentials
-    Then they should be redirected to the home page
+  Scenario: Successful login
+    # Singular: Tests only login, not redirects + cookies [cite: 371]
+    Given I am on the login page
+    When I log in with Bob's valid credentials
+    Then I should be authenticated
+    And I should be redirected to the Dashboard
 
   @auth @session
-  Scenario: Persistent session and logout
-    Given an existing user
-    When the user logs in with "Remember Me" enabled
-    Then a session cookie with an expiry date should be set
-    When the user logs out
-    Then they should be redirected to the sign-in page
+  Scenario: Persistent authentication ("Remember Me")
+    # Clear/Ubiquitous: Avoids technical "cookie" jargon [cite: 307, 377]
+    Given I am on the login page
+    When I log in with "Remember Me" enabled
+    Then I should remain authenticated after restarting the browser
 
-  @auth @signup @onboarding @e2e
-  Scenario: Visitor sign-up, login, onboarding, and logout flow
-    Given a visitor is on the home page
-    When they navigate to the Sign Up page
-    And they fill in the registration form with valid details:
-      | firstName | Bob          |
-      | lastName  | Ross         |
-      | username  | PainterJoy90 |
-      | password  | s3cret       |
-    And they submit the registration form
-    And they log in with the newly created credentials
-    Then the Onboarding Wizard should be displayed
-    When they proceed to the "Create Bank Account" step
-    And they enter valid bank account details
-    And they submit the onboarding form
-    Then the "You're all set!" success screen should be displayed
-    When they complete the onboarding process
-    Then the Transaction List should be visible on the dashboard
-    When the user logs out
-    Then they should be redirected to the sign-in page
+  @auth @logout
+  Scenario: User logout
+    # Singular: Separated from the session scenario to test one thing [cite: 329]
+    Given I am currently logged in as "Bob"
+    When I log out
+    Then I should be returned to the public area
 
-  @auth @validation
-  Scenario: Displaying login form validation errors
-    Given a visitor is on the login page
-    When they clear the username field and blur
-    Then the username error "Username is required" should be displayed
-    When they enter a short password "abc" and blur
-    Then the password error "Password must contain at least 4 characters" should be displayed
-    And the Sign In button should be disabled
+  @auth @signup @onboarding
+  Scenario: New user registration and onboarding
+    # Essential/Focused: Replaces imperative form filling with declarative action [cite: 268, 369]
+    Given I am a new visitor
+    When I register a new account with valid details
+    Then I should be immediately prompted to set up my bank account
+
+  @auth @onboarding
+  Scenario: Completing the onboarding wizard
+    # Singular: Separated from registration to ensure distinct value [cite: 372]
+    Given I have just registered a new account
+    When I complete the bank account setup
+    Then I should see my empty Transaction List
 
   @auth @validation
-  Scenario: Displaying sign-up form validation errors
-    Given a visitor is on the Sign Up page
-    When they interact with the form fields invalidly:
-      | Field            | Action             |
-      | First Name       | Clear and blur     |
-      | Last Name        | Clear and blur     |
-      | Username         | Clear and blur     |
-      | Password         | Clear and blur     |
-      | Confirm Password | Mismatch and blur  |
-    Then appropriate error messages should be displayed for each field
-    And the Sign Up button should be disabled
+  Scenario Outline: Registration form validation
+    # Essential: Uses Outline to avoid repetition and keep scenarios small [cite: 351, 354]
+    Given I am on the Sign Up page
+    When I attempt to register with <condition>
+    Then the system should prevent registration
+    And show the error message "<error>"
+
+    Examples:
+      | condition          | error                                       |
+      | missing username   | Username is required                        |
+      | short password     | Password must contain at least 4 characters |
+      | password mismatch  | Passwords do not match                      |
 
   @auth @error
-  Scenario: Error handling for non-existent user login
-    When a user attempts to log in with a non-existent username "invalidUserName"
-    Then an error alert "Username or password is invalid" should be displayed
+  Scenario Outline: Login failure handling
+    # Unique/Essential: Combines similar error scenarios [cite: 347]
+    Given I am on the login page
+    When I attempt to log in with <credentials>
+    Then I should see the alert "Username or password is invalid"
 
-  @auth @error
-  Scenario: Error handling for invalid password
-    Given an existing user
-    When the user attempts to log in with the correct username but an invalid password
-    Then an error alert "Username or password is invalid" should be displayed
+    Examples:
+      | credentials             |
+      | a non-existent username |
+      | an invalid password     |

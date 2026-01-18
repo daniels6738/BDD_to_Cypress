@@ -1,12 +1,20 @@
 Feature: Shopping Cart Management
 
-  Scenario: Add a product to the shopping cart
-    Given I am on the products page
-    When I click the "Add to cart" button for the "Sauce Labs Backpack"
-    Then the cart icon should show a count of "1"
+  @cart @add
+  Scenario: Adding an item to the cart
+    # Essential: Removed the explicit "Given I am on the products page" navigation step.
+    # The action implies the context.
+    Given I am browsing the product catalog
+    # Focused: Replaced the imperative "click the Add to cart button" with a declarative action.
+    When I add "Sauce Labs Backpack" to my cart
+    # Clear: Verifies the business rule (cart content), not the specific UI implementation (icon badge).
+    Then my cart should contain 1 item
 
-  Scenario: Remove a product from the shopping cart
-    Given I have the "Sauce Labs Backpack" in my cart
-    When I am on the shopping cart page
-    And I click the "Remove" button for the "Sauce Labs Backpack"
-    Then the cart should be empty
+  @cart @remove
+  Scenario: Removing an item from the cart
+    # Essential/Focused: Condensed the setup. Instead of "Given I have item... When I go to page...", 
+    # we declare the starting state directly.
+    Given my cart contains the "Sauce Labs Backpack"
+    # Focused: Replaced "click the Remove button" with the business action.
+    When I remove "Sauce Labs Backpack" from the cart
+    Then my cart should be empty

@@ -1,11 +1,19 @@
-Feature: Todo List Filtering
-  As a user
-  I want to filter my todo list
-  So that I can see only my active, un-completed tasks
+Feature: Task Filtering
 
-  Scenario: Filter the list to show only active items
-    Given I have a list of todo items
-    And the item "feed the cat" is marked as complete
-    When I filter the list by "Active"
-    Then the todo list should only show active items
-    And the list should not contain "feed the cat"
+  Background:
+    # Integrous: Explicitly defines the mixed state required to validate the filter.
+    # Defines both an Active and a Completed item so the test is deterministic.
+    Given I have the following tasks:
+      | Task               | Status    |
+      | buy some cheese    | Active    |
+      | feed the cat       | Completed |
+
+  @todo @filtering
+  Scenario: Filtering for active tasks
+    # Focused: Replaces the imperative "filter by 'Active'" with a declarative action.
+    When I view only the active tasks
+    # Singular/Clear: Verifies the business rule by checking:
+    # 1. The active item is present.
+    # 2. The completed item is absent.
+    Then "buy some cheese" should be visible
+    And "feed the cat" should be hidden

@@ -1,80 +1,60 @@
-Feature: New Transaction Functionality
+Feature: P2P Transaction Processing
 
   Background:
-    Given a user is logged in
-    And the application state is seeded
-    And API requests for users, transactions, and notifications are intercepted
-    And the test context contains a logged-in User (Sender) and a Contact (Receiver)
+    # Ubiquitous/Integrous: Establishes actors clearly without technical API/Seeding jargon
+    Given I am logged in as "Sender"
+    And "Receiver" is an existing contact
 
-  @payment @deposit
-  Scenario: Submitting a Transaction Payment and Verifying Deposit
-    Given the Sender clicks the New Transaction button in the navigation bar
-    When the Sender searches for the Contact by their first name
-    And the Sender selects the Contact from the user list
-    And the Sender enters a valid amount "35"
-    And the Sender enters a description "Sushi dinner 🍣"
-    And the Sender clicks the Pay button
-    Then a "Transaction Submitted!" success alert should be displayed
-    And the Sender's account balance should be updated, reflecting the payment deduction
-    And the transaction should appear in the Sender's Personal Transactions list with the description "Sushi dinner 🍣"
-    And the Contact's account balance in the database should be increased by the payment amount
+  @payment @core
+  Scenario: Sending a payment
+    # Focused: Replaces 6 imperative UI steps (click, type, select) with 1 declarative action
+    When I pay "Receiver" $35 for "Sushi dinner"
+    # Singular: Verifies the direct business outcome (Sender's view)
+    Then my account balance should decrease by $35
+    And the transaction "Sushi dinner" should appear in my history
 
-  @request
-  Scenario: Submitting a Transaction Request
-    Given the Sender clicks the New Transaction button in the navigation bar
-    When the Sender selects the Contact from the user list
-    And the Sender enters a valid amount "95"
-    And the Sender enters a description "Fancy Hotel 🏨"
-    And the Sender clicks the Request button
-    Then a "Transaction Submitted!" success alert should be displayed
-    And the transaction request should appear in the Personal Transactions list with the description "Fancy Hotel 🏨"
-
-  @validation @error
-  Scenario: Displaying New Transaction Errors
-    Given the Sender clicks the New Transaction button in the navigation bar
-    When the Sender selects the Contact from the user list
-    And the Sender clears the amount input field and blurs
-    Then the amount input should display the error "Please enter a valid amount"
-    When the Sender clears the description input field and blurs
-    Then the description input should display the error "Please enter a note"
-    And the Pay button should be disabled
-    And the Request button should be disabled
-
-  @payment @verification
-  Scenario: Submitting a Transaction Payment and Verifying the Receiver's Deposit
-    Given the Sender clicks the New Transaction button in the navigation bar
-    When the Sender creates a payment transaction of amount "25" with description "Indian Food" to the Contact
-    Then a "create another transaction" button should be visible
-    And the Sender's displayed balance should be updated
-    When the Contact logs in
-    Then the Contact's account balance should contain the updated balance, reflecting the deposit
+  @request @core
+  Scenario: Requesting money
+    # Essential/Focused: Focuses on the "what" (Request), not the "how" (UI clicks)
+    When I request $95 from "Receiver" for "Fancy Hotel"
+    Then the request "Fancy Hotel" should appear in my pending transactions
 
   @request @acceptance
-  Scenario: Submitting a Transaction Request and Accepting it as the Receiver
-    Given the Sender clicks the New Transaction button in the navigation bar
-    When the Sender creates a request transaction of amount "100" with description "Fancy Hotel" from the Contact
-    Then a "create another transaction" button should be visible
-    When the Contact logs in
-    And the Contact navigates to the Personal Transactions tab
-    And the Contact clicks on the transaction item with description "Fancy Hotel"
-    And the Contact accepts the request
-    Then the request should be updated successfully
-    When the Sender logs in
-    Then the Sender's account balance should be updated, reflecting the request payment deposit
+  Scenario: Accepting a transaction request
+    # Singular/Essential: Decoupled from the creation step.
+    # Assumes the precondition (Given) instead of forcing the user to create it first.
+    Given I am logged in as "Receiver"
+    And I have a pending request for $100 from "Sender"
+    When I accept the transaction request
+    Then the request should be marked as paid
+    And my account balance should decrease by $100
 
-  @search
-  Scenario Outline: Searching for a User by Different Attributes
-    Given the Sender navigates to the New Transaction form
-    When the Sender searches for a user by their "<attribute>"
-    Then the user list should display at least one result
-    And the first result should contain the searched "<attribute>" value
-    When the Sender clears the search input
-    Then the user list should be empty
+  @validation
+  Scenario Outline: Preventing invalid transaction submissions
+    # Essential: Uses Outline to avoid repetition
+    Given I am creating a new transaction
+    When I attempt to submit with <condition>
+    Then I should see the error "<error_message>"
+    # Focused: Focuses on the business rule (buttons disabled), not technical DOM events like "blur"
+    And the submission actions should be disabled
 
     Examples:
-      | attribute     |
-      | firstName     |
-      | lastName      |
-      | username      |
-      | email         |
-      | phoneNumber   |
+      | condition             | error_message               |
+      | a missing amount      | Please enter a valid amount |
+      | a missing description | Please enter a note         |
+
+  @search
+  Scenario Outline: User search capability
+    # Singular: Removed the "Clear Search" step to ensure the scenario tests only one specific behavior
+    Given I am on the transaction recipient search
+    When I search by "<attribute>"
+    Then I should see "Receiver" in the results
+    And the result should match the "<attribute>" value
+
+    Examples:
+      | attribute    |
+      | First Name   |
+      | Last Name    |
+      | Username     |
+      | Email        |
+      | Phone Number |

@@ -1,21 +1,29 @@
-Feature: Login Functionality
+Feature: User Authentication
 
-  Scenario: Successful login with valid credentials
-    Given I am on the login page
-    When I enter the username "standard_user"
-    And I enter the password "secret_sauce"
-    And I click the login button
-    Then I should be redirected to the products page
+  Background:
+    # Ubiquitous: Uses clear, non-technical language to establish context.
+    Given I am on the login screen
 
-  Scenario: Unsuccessful login with invalid credentials
-    Given I am on the login page
-    When I enter the username "wrong_user"
-    And I enter the password "secret_sauce"
-    And I click the login button
-    Then I should see an error message "Username and password do not match any user in this service"
+  @auth @login
+  Scenario: Successful login
+    # Focused: Replaces imperative steps (enter user, enter pass, click button)
+    # with a single declarative business action.
+    When I log in with valid credentials
+    # Clear/Ubiquitous: Verifies the business goal (accessing the catalog), 
+    # rather than the technical implementation (URL redirection).
+    Then I should be authenticated
+    And I should see the product catalog
 
-  Scenario: Successfully log out from the application
-    Given I am logged in as a standard user
-    When I open the sidebar menu
-    And I click the logout link
-    Then I should be on the login page
+  @auth @error-handling
+  Scenario: Login failure with invalid credentials
+    # Essential/Focused: Abstracts specific bad data ("wrong_user") into a clear condition.
+    When I attempt to log in with invalid credentials
+    Then I should see the error "Username and password do not match any user in this service"
+
+  @auth @logout
+  Scenario: User logout
+    # Essential: Uses a precondition to skip the login steps for this specific test.
+    Given I am already logged in
+    # Focused: Removes the brittle UI steps ("open sidebar", "click link").
+    When I log out of the application
+    Then I should be returned to the login screen

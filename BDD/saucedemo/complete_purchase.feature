@@ -1,9 +1,14 @@
 Feature: Checkout Process
 
-  Scenario: Complete a purchase successfully
-    Given I have a product in my cart
-    When I proceed to the checkout information page
-    And I fill in my first name as "John", last name as "Doe", and postal code as "12345"
-    And I continue to the checkout overview page
-    And I finish the purchase
-    Then I should see the order completion message
+  Background:
+    Given I have products in my shopping cart
+
+  @checkout @happy-path
+  Scenario: Successful order placement
+    # Focused/Essential: Replaces the imperative chain of navigation and data entry 
+    # ("proceed", "fill in", "continue") with a single declarative business action.
+    When I complete the checkout with valid shipping details
+    # Clear/Singular: Verifies the clear business outcome (order processed), 
+    # not just the UI confirmation message.
+    Then my order should be successfully processed
+    And I should see the order confirmation

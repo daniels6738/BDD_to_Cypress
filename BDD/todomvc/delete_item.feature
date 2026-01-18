@@ -1,9 +1,14 @@
-Feature: Todo Item Deletion
-  As a user
-  I want to remove an item from my list
-  So that I can clear out unneeded tasks
+Feature: Task Deletion Rules
 
-  Scenario: Delete an item by editing it to be empty
-    Given I have a list of todo items including "feed the cat"
-    When I edit the item "feed the cat" and leave the text empty
-    Then the todo list should not contain the item "feed the cat"
+  Background:
+    # Essential: Establishes the specific data required for the test.
+    Given the task "feed the cat" exists
+
+  @todo @edge-case
+  Scenario: Deleting a task via empty description
+    # Focused: Replaces the imperative procedural steps ("edit... leave empty") 
+    # with a declarative business action describing the data change.
+    When I edit the task "feed the cat" so it has an empty name 
+    # Singular/Clear: Verifies the specific business rule that 
+    # empty descriptions trigger a deletion.
+    Then the task should be removed from the list

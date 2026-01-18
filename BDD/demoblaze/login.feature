@@ -1,18 +1,26 @@
-Feature: Login Functionality
+Feature: User Authentication
 
-  Scenario: Successful login with valid credentials
-    Given I am not logged on the application
-    When I click the Log in button
-    And I enter the username "demoblaze"
-    And I enter the password "demoblaze"
-    And I click the Log in button
-    Then the page should be refreshed
-    And I should not see the Log in button anymore
+  Background:
+    # Ubiquitous: Clearly defines the actor ("visitor") instead of a generic "I"
+    Given I am an unauthenticated visitor
 
-  Scenario: Unsuccessful login with invalid credentials
-    Given I am not logged on the application
-    When I click the Log in button
-    And I enter the username "bdd-auto-cypress"
-    And I enter the password "12345"
-    And I click the login button
-    Then I should see an error message "User does not exist."
+  @auth @login
+  Scenario: Successful login
+    # Focused: Replaces 4 imperative steps (click, enter, enter, click) with 1 declarative action
+    When I log in with valid credentials
+    # Clear/Ubiquitous: Verifies the business outcome (access granted), not technical side effects (page refresh)
+    Then I should be authenticated
+    And I should see the user dashboard
+
+  @auth @error-handling
+  Scenario Outline: Login failure handling
+    # Complete/Singular: Uses an Outline to cover different failure modes (wrong user vs wrong password)
+    When I attempt to log in with <condition>
+    Then I should see the error "<error_message>"
+    And I should remain unauthenticated
+
+    Examples:
+      | condition             | error_message       |
+      | a non-existent user   | User does not exist.|
+      # Added to ensure Completeness regarding invalid credentials
+      | an incorrect password | Wrong password.     |
