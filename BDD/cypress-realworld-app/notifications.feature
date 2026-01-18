@@ -1,13 +1,10 @@
 Feature: User Notifications
 
   Background:
-    # Ubiquitous: Uses "I" (Actor Consistency) and avoids "seeded/intercepted" jargon
     Given I am a logged-in user
 
   @notifications @social
   Scenario Outline: Receiving social interaction notifications
-    # Singular: Decouples the "Action" (Like/Comment) from the "Verification" (Notification).
-    # Assumes the event happened in the Given step (Precondition).
     Given "<Actor>" has <action> my transaction
     When I check my notifications
     Then I should see a notification that "<Actor>" <action> the transaction
@@ -19,7 +16,6 @@ Feature: User Notifications
 
   @notifications @financial
   Scenario Outline: Receiving transaction status notifications
-    # Focused: Focuses on the notification delivery, not the transaction creation flow.
     Given "<Actor>" has sent me a <type>
     When I check my notifications
     Then I should see a notification for the <type> from "<Actor>"

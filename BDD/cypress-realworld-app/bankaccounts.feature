@@ -1,24 +1,19 @@
 Feature: Bank Accounts Management
 
   Background:
-    # Ubiquitous/Integrous: Uses "I" (Actor Consistency) and avoids "seeded" jargon
     Given I am a logged-in user
 
   @bank-accounts @creation
   Scenario: Adding a new bank account
-    # Essential/Focused: Replaces imperative clicking/filling with declarative action
     Given I am on the Bank Accounts page
     When I add a new bank account with valid details
-    # Singular: Verifies the business outcome, not the specific redirection URL
     Then the account "The Best Bank" should be listed in my accounts
 
   @bank-accounts @validation
   Scenario Outline: Preventing invalid account details
-    # Essential/Singular: Uses Outline to test permutations without repetition or "monster" scenarios
     Given I am adding a new bank account
     When I attempt to save with <condition>
     Then I should see the error "<error_message>"
-    # Focused: Focuses on the business rule (prevention), not the UI state (disabled button)
     And the account should not be created
 
     Examples:
@@ -31,15 +26,12 @@ Feature: Bank Accounts Management
 
   @bank-accounts @delete
   Scenario: Deleting an existing bank account
-    # Ubiquitous: Replaces "Soft deleting" (technical) with "delete" (business)
     Given I have a bank account named "Old Bank"
     When I delete the account "Old Bank"
-    # Singular/Clear: Checks the clear business outcome
     Then "Old Bank" should no longer appear in my active account list
 
   @bank-accounts @onboarding
   Scenario: New user onboarding prompt
-    # Focused: Removed "Modal/Dialog" (UI implementation detail)
     Given I have no bank accounts
     When I visit the Bank Accounts page
     Then I should be prompted to create my first account
