@@ -1,11 +1,15 @@
 # Table definition
 CREATE TABLE dataset_pairs (
-    id INT AUTO_INCREMENT PRIMARY KEY,  # ID to facilitate identification of a pair
-    feature_name VARCHAR(255) NOT NULL, # Name to facilitate identification of pair by a human
-    cypress_code LONGTEXT,              # The Cypress code
-    gherkin_script LONGTEXT,            # The Gherkin (BDD) script
-    INDEX (feature_name)                # Indexing by name
-);
+  id int NOT NULL AUTO_INCREMENT,                        # ID to facilitate identification of a pair
+  feature_name varchar(255) NOT NULL,                    # Name to facilitate identification of pair by a human
+  cypress_code longtext,                                 # The Cypress code
+  gherkin_script longtext,                               # The Gherkin (BDD) script
+  website varchar(255) DEFAULT NULL,                     # The target application tested
+  complexity enum('Low','Medium','High') DEFAULT NULL,   # The complexity of the scenario based on Step-Count
+  automated_source varchar(255) DEFAULT NULL,            # The source of the automated tests
+  PRIMARY KEY (id),
+  KEY feature_name (feature_name)
+)
 
 # See 5 entries with the longest cypress code
 SELECT feature_name, LENGTH(cypress_code) as code_len 
